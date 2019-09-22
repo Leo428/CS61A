@@ -36,6 +36,7 @@ def composite_identity(f, g):
     False
     """
     "*** YOUR CODE HERE ***"
+    return lambda x: f(g(x)) == g(f(x))
 
 def cycle(f1, f2, f3):
     """Returns a function that is itself a higher-order function.
@@ -64,3 +65,16 @@ def cycle(f1, f2, f3):
     19
     """
     "*** YOUR CODE HERE ***"
+    def trolling(n):
+        i, big_troll = 1, lambda x: x
+        while i <= n:
+            if i % 3 == 1:
+                big_troll = compose1(f1, big_troll)
+            elif i % 3 == 2:
+                big_troll = compose1(f2, big_troll)
+            else:
+                big_troll = compose1(f3, big_troll)
+            i += 1
+        return big_troll
+    return trolling
+
