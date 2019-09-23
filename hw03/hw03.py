@@ -74,7 +74,7 @@ def pingpong(n):
             return h[0] + h[1], h[1]
             
     return helper(n)[0]
-        
+
 
 def count_change(amount):
     """Return the number of ways to make change for amount.
@@ -107,7 +107,6 @@ def count_change(amount):
                 return 1
             if coin == 0: 
                 return 0
-            
             return helper(a, coin//2) + helper(a - coin, coin)
         else:
             return 0
