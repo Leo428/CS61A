@@ -38,7 +38,7 @@ def summation(n, term):
     True
     """
     assert n >= 1
-    return sum(term(x) for x in range(1,n+1))
+    return term(n) + summation(n-1, term) if n>=2 else term(n) 
 
 def gcd(a, b):
     """Returns the greatest common divisor of a and b.
@@ -53,7 +53,10 @@ def gcd(a, b):
     >>> gcd(40, 40)
     40
     """
-    "*** YOUR CODE HERE ***"
+    if max(a,b) % min(a,b) == 0:
+        return min(a,b)
+    else:
+        return gcd(min(a,b),max(a,b)%min(a,b))
 
 def couple(s1, s2):
     """Return a list that contains lists with i-th elements of two sequences
@@ -68,7 +71,8 @@ def couple(s1, s2):
     [['c', 's'], [6, '1']]
     """
     assert len(s1) == len(s2)
-    "*** YOUR CODE HERE ***"
+    return [[x,y] for x,y in zip(s1,s2)]
+        
 
 def enumerate(s, start=0):
     """Returns a list of lists, where the i-th list contains i+start and
@@ -78,7 +82,7 @@ def enumerate(s, start=0):
     >>> enumerate('five', 5)
     [[5, 'f'], [6, 'i'], [7, 'v'], [8, 'e']]
     """
-    "*** YOUR CODE HERE ***"
+    return couple(list(range(start,start+len(s))),s)
 
 # Optional problems
 
@@ -93,7 +97,7 @@ def squares(s):
     >>> squares(seq)
     []
     """
-    "*** YOUR CODE HERE ***"
+    
 
 def key_of_min_value(d):
     """Returns the key in a dict d that corresponds to the minimum value of d.
@@ -115,4 +119,22 @@ def ten_pairs(n):
     >>> ten_pairs(9641469)
     6
     """
-    "*** YOUR CODE HERE ***"
+    def lenin(n):
+        assert n >= 0, "Sending you directly to the gulag"
+        if n // 10 == 0:
+            return 1
+        else:
+            return 1 + lenin(n//10)
+
+    def helper(that_digit, n):
+        print("DEBUG: ", that_digit, n)
+        if that_digit == 0 or n == 0:
+            return 0
+        if that_digit + (n % (10**lenin(n-1))) == 10:
+            return 1+helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+        else:
+            return helper(that_digit, n%(10**(lenin(n)-1))) + helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+
+    print("DEBUG: ", lenin(n))
+    return helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+
