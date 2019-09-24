@@ -127,14 +127,24 @@ def ten_pairs(n):
             return 1 + lenin(n//10)
 
     def helper(that_digit, n):
-        print("DEBUG: ", that_digit, n)
-        if that_digit == 0 or n == 0:
+        print("DEBUG: ", that_digit, n, (n//(10**(lenin(n)-1))))
+        if that_digit <= 0 or n <= 0:
             return 0
-        if that_digit + (n % (10**lenin(n-1))) == 10:
-            return 1+helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+        if that_digit + (n//(10**(lenin(n)-1))) == 10:
+            if lenin(n) >= 2:
+                print("DEBUG: ", "good")
+                return 1+helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+            elif lenin(n) == 1:
+                print("DEBUG: ", "good")
+                return 1
+            else:
+                return 0
         else:
-            return helper(that_digit, n%(10**(lenin(n)-1))) + helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+            if lenin(n) >= 2:
+                return helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+            else:
+                return 0
 
-    print("DEBUG: ", lenin(n))
+    #print("DEBUG: ", lenin(n))
     return helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
 
