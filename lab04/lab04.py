@@ -119,32 +119,17 @@ def ten_pairs(n):
     >>> ten_pairs(9641469)
     6
     """
-    def lenin(n):
-        assert n >= 0, "Sending you directly to the gulag"
-        if n // 10 == 0:
+    def helper(that_digit, n):
+        print("DEBUG: ", that_digit, n)
+        if len(n) >= 2:
+            if int(that_digit) + int(n[0]) == 10:
+                return 1 + helper(that_digit, n[1:]) + helper(n[0], n[1:])
+            else:
+                return helper(that_digit, n[1:]) + helper(n[0], n[1:])
+        elif len(n) == 1 and int(that_digit) + int(n[0]) == 10:
             return 1
         else:
-            return 1 + lenin(n//10)
-
-    def helper(that_digit, n):
-        print("DEBUG: ", that_digit, n, (n//(10**(lenin(n)-1))))
-        if that_digit <= 0 or n <= 0:
             return 0
-        if that_digit + (n//(10**(lenin(n)-1))) == 10:
-            if lenin(n) >= 2:
-                print("DEBUG: ", "good")
-                return 1+helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
-            elif lenin(n) == 1:
-                print("DEBUG: ", "good")
-                return 1
-            else:
-                return 0
-        else:
-            if lenin(n) >= 2:
-                return helper(that_digit, n%(10**(lenin(n)-1)))+helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
-            else:
-                return 0
-
-    #print("DEBUG: ", lenin(n))
-    return helper(n//(10**(lenin(n)-1)), n%(10**(lenin(n)-1)))
+    
+    return helper(str(n)[0],str(n)[1:])
 

@@ -1,12 +1,34 @@
-def inverse_c(n):
-    grow(n)
-    print(n)
-    shrink(n)
+def r(n):
+    last, rest = n%10, n//10
+    if rest == 0:
+        return last * 11
+    return r(rest) * 100 + last * 11
 
-def f_then_g(f,g,n):
-    if n:
-        f(n)
-        g(n)
+class A(object):
+    a = 1
+    
+    def __init__(self):
+        self.b = 2
+        self.__str__ = lambda: 'fuck'
 
-grow = lambda n: f_then_g(grow, print, n//10)
-shrink = lambda n: f_then_g(print, shrink, n//10)
+    def __str__(self):
+        return 'shit'
+
+class B(A):
+    def __init__(self):
+        self.c = 3
+
+def in_nested(v, L):
+    if type(v) == type(L):
+        return v == L
+    else:
+        return any([in_nested(v,x) for x in L])
+
+class C():
+    a = 1
+
+    def __repr__(self):
+        return super().__repr__() + 'lol'
+    
+    # def __str__(self):
+    #     return 'shit'
