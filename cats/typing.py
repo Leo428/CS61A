@@ -73,16 +73,14 @@ def accuracy(typed, reference):
     if len(typed_words) == 0:
         return 0.0
     else:
-        index, percent = 0, 100.0
-        for t in typed_words:
-            if index < len(reference_words):
-                if t != reference_words[index]:
-                # print("DEBUG: ", t, reference_words[index])
-                # print("DEBUG: ", len(reference), len(reference_words))
+        percent = 100.0
+        # index, percent = 0, 100.0
+        for i in range(len(typed_words)):
+            if i < len(reference_words):
+                if typed_words[i] != reference_words[i]:
                     percent -= (1/len(typed_words)) * 100
             else:
                 percent -= (1/len(typed_words)) * 100
-            index += 1
         return round(percent, 2)
     # END PROBLEM 3
 
@@ -106,8 +104,9 @@ def autocorrect(user_word, valid_words, diff_function, limit):
         if candidate == user_word:
             return user_word
         else:
-            if diff < 0 and diff_function(user_word, candidate, limit) <= limit or diff_function(user_word, candidate, limit) < diff:
-                best_fit_word, diff = candidate, diff_function(user_word, candidate, limit)
+            current_diff = diff_function(user_word, candidate, limit)
+            if diff < 0 and current_diff <= limit or current_diff < diff:
+                best_fit_word, diff = candidate, current_diff
     return best_fit_word
     # END PROBLEM 5
 
