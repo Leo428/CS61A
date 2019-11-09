@@ -59,7 +59,12 @@ def eval_all(expressions, env):
     """Evaluate each expression in the Scheme list EXPRESSIONS in
     environment ENV and return the value of the last."""
     # BEGIN PROBLEM 7
-    return scheme_eval(expressions.first, env)
+    if expressions is not nil:
+        if expressions.rest is nil:
+            return scheme_eval(expressions.first, env)
+        else:
+            scheme_eval(expressions.first, env)
+            return eval_all(expressions.rest, env)
     # END PROBLEM 7
 
 ################
@@ -109,7 +114,16 @@ class Frame(object):
         <{a: 1, b: 2, c: 3} -> <Global Frame>>
         """
         # BEGIN PROBLEM 10
-        "*** YOUR CODE HERE ***"
+        def helper(frame, keys, values):
+            if (keys is nil and values is not nil) or (keys is not nil and values is nil):
+                raise SchemeError('the number of argument values does not match with the number of formal parameters')
+            if keys is not nil and values is not nil:
+                frame.define(keys.first, values.first)
+                helper(frame, keys.rest, values.rest)
+
+        child_frame = Frame(self)
+        helper(child_frame, formals, vals)
+        return child_frame
         # END PROBLEM 10
 
 ##############
@@ -173,7 +187,8 @@ class LambdaProcedure(Procedure):
         """Make a frame that binds my formal parameters to ARGS, a Scheme list
         of values, for a lexically-scoped call evaluated in environment ENV."""
         # BEGIN PROBLEM 11
-        "*** YOUR CODE HERE ***"
+        frame = self.env.make_child_frame(self.formals, args)
+        return frame
         # END PROBLEM 11
 
     def __str__(self):
@@ -219,7 +234,12 @@ def do_define_form(expressions, env):
         # END PROBLEM 5
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
         # BEGIN PROBLEM 9
-        "*** YOUR CODE HERE ***"
+        lambda_expr = Pair(target.rest, expressions.rest)
+        # lambda_form = do_lambda_form(lambda_expr, env)
+        # print(lambda_expr)
+        # print(lambda_form)
+        env.define(target.first, do_lambda_form(lambda_expr, env))
+        return target.first
         # END PROBLEM 9
     else:
         bad_target = target.first if isinstance(target, Pair) else target
@@ -243,7 +263,8 @@ def do_lambda_form(expressions, env):
     formals = expressions.first
     check_formals(formals)
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    body = expressions.rest
+    return LambdaProcedure(formals, body, env)
     # END PROBLEM 8
 
 def do_if_form(expressions, env):
@@ -257,19 +278,34 @@ def do_if_form(expressions, env):
 def do_and_form(expressions, env):
     """Evaluate a (short-circuited) and form."""
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    if expressions is nil:
+        return '#t'
+    last = expressions
+    while expressions.rest is not nil:
+        if scheme_falsep(scheme_eval(expressions.first, env)):
+            return scheme_eval(expressions.first, env)
+        last, expressions = expressions.first, expressions.rest
+    return scheme_eval(expressions.first, env)
     # END PROBLEM 12
 
 def do_or_form(expressions, env):
     """Evaluate a (short-circuited) or form."""
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    if expressions is nil:
+        return '#f'
+    while expressions.rest is not nil:
+        if scheme_truep(scheme_eval(expressions.first, env)):
+            return scheme_eval(expressions.first, env)
+        expressions = expressions.rest
+    return scheme_eval(expressions.first, env)
     # END PROBLEM 12
 
 def do_cond_form(expressions, env):
     """Evaluate a cond form."""
     while expressions is not nil:
         clause = expressions.first
+        # print(expressions)
+        # print(clause)
         check_form(clause, 1)
         if clause.first == 'else':
             test = True
@@ -279,7 +315,10 @@ def do_cond_form(expressions, env):
             test = scheme_eval(clause.first, env)
         if scheme_truep(test):
             # BEGIN PROBLEM 13
-            "*** YOUR CODE HERE ***"
+            print('DEBUG: ', clause.rest)
+            if clause.rest is nil:
+                return test
+            return eval_all(clause.rest, env)
             # END PROBLEM 13
         expressions = expressions.rest
 
